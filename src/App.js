@@ -1,23 +1,44 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react'; 
 import './App.css';
 
 function App() {
+
+  const [posts, setPosts ] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [postsPerPage, setPostsPerPage] = useState(10)
+  const [loading, setLoading] = useState(false)
+
+  
+  
+
+  useEffect( () =>{
+
+    const headers = {
+      'Accept': 'application/json',
+      'Authorization': process.env.REACT_APP_API_KEY
+    }
+    
+    const fetching = async () => {
+      
+      const req = await fetch('https://the-one-api.dev/v2/quote', {
+        headers: headers
+      })
+      const resp = await req.json()
+      console.log(resp)
+      setPosts(resp.docs)
+        
+      
+      
+    }
+    
+    fetching()
+  },[])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {posts.map( (post)=>{
+        return <li key={post.id}>{post.dialog}</li>
+      })}
     </div>
   );
 }
